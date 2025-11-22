@@ -7,7 +7,7 @@ $superheroes = [
       "alias" => "Captain America",
       "biography" => "Recipient of the Super-Soldier serum, World War II hero Steve Rogers fights for American ideals as one of the world’s mightiest heroes and the leader of the Avengers.",
   ],
-  [
+  [ 
       "id" => 2,
       "name" => "Tony Stark",
       "alias" => "Ironman",
@@ -63,10 +63,31 @@ $superheroes = [
   ], 
 ];
 
-?>
 
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
+if (isset($_GET['query']) && !empty($_GET['query'])) {
+    $query = filter_var($_GET['query'], FILTER_SANITIZE_STRING);
+    $query = strtolower($query);
+    $found = null;
+
+    foreach ($superheroes as $hero) {
+        if (strtolower($hero['name']) === $query || strtolower($hero['alias']) === $query) {
+            $found = $hero;
+            break;
+        }
+    }
+
+    if ($found) {
+        echo "<h3>{$found['alias']}</h3>";
+        echo "<h4>{$found['name']}</h4>";
+        echo "<p>{$found['biography']}</p>";
+    } else {
+        echo "<p>Superhero not found</p>";
+    }
+    exit;
+}
+
+echo "<ul>";
+foreach ($superheroes as $hero) {
+    echo "<li>{$hero['alias']}</li>";
+}
+echo "</ul>";
